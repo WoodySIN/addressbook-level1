@@ -855,7 +855,13 @@ public class AddressBook {
      * @return index of the person
      */
     private static int findPerson(String[] person) {
-        int indexOfFoundPerson = getAllPersonsInAddressBook().indexOf(person);
+        int indexOfFoundPerson = -1;
+        ArrayList<String[]> persons = getAllPersonsInAddressBook();
+        for (int i = 0; i < persons.size(); i++) {
+            if (persons.get(i)[0].equals(person[0])) {
+                indexOfFoundPerson = i;
+            }
+        }
         return indexOfFoundPerson;
     }
 
