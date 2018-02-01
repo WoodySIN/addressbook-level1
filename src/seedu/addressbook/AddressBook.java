@@ -453,8 +453,20 @@ public class AddressBook {
     }
 
     /**
+     * Constructs a feedback message for a successful add person command execution.
+     *
+     * @see #executeAddPerson(String)
+     * @param updatedPerson person who was successfully added
+     * @return successful add person feedback message
+     */
+    private static String getMessageForSuccessfulUpdatePerson(String[] updatedPerson) {
+        return String.format(MESSAGE_UPDATED,
+                getNameFromPerson(updatedPerson), getPhoneFromPerson(updatedPerson), getEmailFromPerson(updatedPerson));
+    }
+
+    /**
      * Updates a person (specified by the command args) information to the address book.
-     * The entire command contains the name of person and information to be updated.
+     * The command contains the name of person and information to be updated.
      *
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
@@ -462,6 +474,14 @@ public class AddressBook {
     private static String executeUpdatePerson(String commandArgs) {
         final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
 
+        if (!decodeResult.isPresent()) {
+            return getMessageForInvalidCommandInput(COMMAND_UPDATE_WORD, getUsageInfoForUpdateCommand());
+        }
+
+        // update the person as specified
+        final String[] personToUpdate =  decodeResult.get();
+        updatePersonToAddressBook(personToUpdate);
+        return getMessageForSuccessfulUpdatePerson(personToUpdate);
     }
 
     /**
@@ -807,6 +827,36 @@ public class AddressBook {
     private static void addPersonToAddressBook(String[] person) {
         ALL_PERSONS.add(person);
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    }
+
+    /**
+     * update a person in the address book. Saves changes to storage file.
+     *
+     * @param person to update
+     */
+    private static void updatePersonToAddressBook(String[] person) {
+        updatePerson(findPerson(person), person);
+        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    }
+
+    /**
+     * update the person in the ArrayList. .
+     *
+     * @param person to update
+     */
+    private static void updatePerson(int indexOfPerson, String[] person) {
+        ALL_PERSONS.set(indexOfPerson, person);
+    }
+
+    /**
+     * find the index of person to be updated
+     *
+     * @param person to update
+     * @return index of the person
+     */
+    private static int findPerson(String[] person) {
+        int indexOfFoundPerson = getAllPersonsInAddressBook().indexOf(person);
+        return indexOfFoundPerson;
     }
 
     /**
