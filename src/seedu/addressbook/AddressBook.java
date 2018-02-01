@@ -90,6 +90,7 @@ public class AddressBook {
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
+    private static final String MESSAGE_UPDATED = "The person information updated: %1$s, Phone: %2$s, Email: %3$s";
 
     // These are the prefix strings to define the data type of a command parameter
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
@@ -132,6 +133,13 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+
+    private static final String COMMAND_UPDATE_WORD = "update";
+    private static final String COMMAND_UPDATE_DESC = "Updates a person in the address book";
+    private static final String COMMAND_UPDATE_PARAMETERS = "NAME "
+                                                          + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
+                                                          + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
+    private static final String COMMAND_UPDATE_EXAMPLE = COMMAND_UPDATE_WORD + "John Doe p/98123456 e/johnd@hotmail.com";
 
     private static final String DIVIDER = "===================================================";
 
