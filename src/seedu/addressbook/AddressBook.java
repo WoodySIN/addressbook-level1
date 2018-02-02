@@ -139,7 +139,7 @@ public class AddressBook {
     private static final String COMMAND_UPDATE_PARAMETERS = "NAME "
                                                           + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
                                                           + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
-    private static final String COMMAND_UPDATE_EXAMPLE = COMMAND_UPDATE_WORD + "John Doe p/98123456 e/johnd@hotmail.com";
+    private static final String COMMAND_UPDATE_EXAMPLE = COMMAND_UPDATE_WORD + " John Doe p/98123456 e/johnd@hotmail.com";
 
     private static final String DIVIDER = "===================================================";
 
