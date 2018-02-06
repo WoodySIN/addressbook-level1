@@ -14,7 +14,7 @@
   list
 
 ##########################################################
-# test add person command, setup state for futuer tests
+# test add person command, setup state for future tests
 ##########################################################
 
   # should catch invalid args format
@@ -40,6 +40,37 @@
   list
   add Esther Potato p/555555 e/esther@notreal.potato
   list
+
+  ##########################################################
+  # test update person command
+  ##########################################################
+
+    # should catch invalid args format
+    update wrong args wrong args
+    update Valid Name p/55555 valid@email.butNoPrefix
+    update Valid Name 55555 e/valid@email.butPhonePrefixMissing
+
+    # should catch invalid person data
+    update []\[;] p/12345 e/valid@g.mail
+    update Valid Name p/not_numbers e/valid@g.mail
+    update Valid Name p/55555 e/notAnEmail
+
+     # should catch person not found
+     update woody p/81232920 e/woodymyrp@gmail.com
+
+    # should add correctly
+    update Adam Brown p/555555 e/adam@gmail.com
+    list
+    update Betsy Choo p/222222 e/benchoo@u.nus.edu
+    list
+
+    # order of phone and email should not matter
+    update Charlie Dickson e/charlie.d@u.nus.edu p/333333
+    list
+    update Dickson Ee e/dickson@nus.edu.sg p/12345
+    list
+    update Esther Potato p/123456 e/esther@notreal.com
+    list
 
 ##########################################################
 # test find persons command

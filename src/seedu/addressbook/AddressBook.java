@@ -81,6 +81,7 @@ public class AddressBook {
                                                             + LS + "\tjava AddressBook [custom storage file path]";
     private static final String MESSAGE_INVALID_PERSON_DISPLAYED_INDEX = "The person index provided is invalid";
     private static final String MESSAGE_INVALID_STORAGE_FILE_CONTENT = "Storage file has invalid content";
+    private static final String MESSAGE_INVALID_UPDATE = "Failed to update: ";
     private static final String MESSAGE_PERSON_NOT_IN_ADDRESSBOOK = "Person could not be found in address book";
     private static final String MESSAGE_ERROR_CREATING_STORAGE_FILE = "Error: unable to create file: %1$s";
     private static final String MESSAGE_ERROR_MISSING_STORAGE_FILE = "Storage file missing: %1$s";
@@ -162,6 +163,11 @@ public class AddressBook {
      * Offset required to convert between 1-indexing and 0-indexing.COMMAND_
      */
     private static final int DISPLAYED_INDEX_OFFSET = 1;
+
+    /**
+     * Default value returned when cannot locate a person's index
+     */
+    private static final int PERSON_NOT_FOUND = -1;
 
     /**
      * If the first non-whitespace character in a user's input line is this, that line will be ignored.
@@ -419,6 +425,16 @@ public class AddressBook {
     }
 
     /**
+     * Constructs a generic feedback message for an invalid command from user, with instructions for correct usage.
+     *
+     * @param person message showing the person cannot be found
+     * @return invalid command args feedback message
+     */
+    private static String getMessageForInvalidUpdate(String[] person) {
+        return MESSAGE_INVALID_UPDATE + person[0] + " cannot be found!";
+    }
+
+    /**
      * Adds a person (specified by the command args) to the address book.
      * The entire command arguments string is treated as a string representation of the person to add.
      *
@@ -480,8 +496,22 @@ public class AddressBook {
 
         // update the person as specified
         final String[] personToUpdate =  decodeResult.get();
-        updatePersonToAddressBook(personToUpdate);
-        return getMessageForSuccessfulUpdatePerson(personToUpdate);
+        return updatePerson(personToUpdate);
+    }
+
+    /**
+     * Updates the information of a person
+     *
+     * @param personToUpdate person to be updated
+     * @return feedback display message for the operation result
+     */
+    private static String updatePerson(String[] personToUpdate) {
+        final int indexOfPerson = locatePerson(personToUpdate);
+        if (isPersonLocated(indexOfPerson)) {
+            updatePersonToAddressBook(personToUpdate);
+            return getMessageForSuccessfulUpdatePerson(personToUpdate);
+        }
+        return getMessageForInvalidUpdate(personToUpdate);
     }
 
     /**
@@ -835,8 +865,20 @@ public class AddressBook {
      * @param person to update
      */
     private static void updatePersonToAddressBook(String[] person) {
-        updatePerson(findPerson(person), person);
+        int personIndex = locatePerson(person);
+
+        updatePerson(personIndex, person);
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    }
+
+    /**
+     * locate the person's index in the addressbook. .
+     *
+     * @param indexOfPerson located for update
+     * @return true if the person to be updated is found
+     */
+    private static boolean isPersonLocated(int indexOfPerson) {
+        return indexOfPerson != PERSON_NOT_FOUND;
     }
 
     /**
@@ -845,17 +887,22 @@ public class AddressBook {
      * @param person to update
      */
     private static void updatePerson(int indexOfPerson, String[] person) {
-        ALL_PERSONS.set(indexOfPerson, person);
+        if (indexOfPerson == PERSON_NOT_FOUND) {
+            System.out.println("Failed to update the " + person[0]);
+        }
+        else {
+            ALL_PERSONS.set(indexOfPerson, person);
+        }
     }
 
     /**
-     * find the index of person to be updated
+     * locate the index of person to be updated
      *
      * @param person to update
      * @return index of the person
      */
-    private static int findPerson(String[] person) {
-        int indexOfFoundPerson = -1;
+    private static int locatePerson(String[] person) {
+        int indexOfFoundPerson = PERSON_NOT_FOUND;
         ArrayList<String[]> persons = getAllPersonsInAddressBook();
         for (int i = 0; i < persons.size(); i++) {
             if (persons.get(i)[0].equals(person[0])) {
